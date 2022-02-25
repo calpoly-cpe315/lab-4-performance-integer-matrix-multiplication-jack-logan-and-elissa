@@ -40,6 +40,9 @@ matmul:
 	stp x23, x24, [sp, 48]
 
 	mov x19, x0					//P.elements?
+	ldr    w0, startstring      // load start string0
+	mov x1, x19
+	bl     printf
 
 	// Restore callee saved
 	ldp   x19, x20, [sp, 16]
@@ -47,3 +50,6 @@ matmul:
 	ldp   x23, x24, [sp, 48]
 	ldp x29, x30, [sp], 64  //restore FP and LR, restore SP, deallocate
 	ret
+
+startstring:
+	.asciz	"P.elements = %d?\n"
