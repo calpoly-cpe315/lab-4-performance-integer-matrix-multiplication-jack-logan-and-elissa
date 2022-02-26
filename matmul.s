@@ -66,9 +66,17 @@ inloop:		//inner loop
 ininloop:	//inner inner loop
 	cmp x27, x23
 	b.ge endininloop
+	//sum += A[i * wA + k] * B[k * wB + j];
+	
+	//k += 1
+	mov x0, x27
+	mov x1, #1
+	bl intadd
 	b ininloop
 
 endininloop:
+	//C[i * wB + j] = sum;
+
 	//j += 1
 	mov x0, x26
 	mov x1, #1
@@ -76,7 +84,6 @@ endininloop:
 	b inloop
 
 endinloop:
-
 
 	//i += 1
 	mov x0, x25
