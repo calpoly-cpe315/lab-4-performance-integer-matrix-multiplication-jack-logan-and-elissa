@@ -81,7 +81,7 @@ ininloop:	//inner inner loop
 	ldr x20, [x20, x0] // new x20 is element wanted
 	//B
 	mov x0, x27
-	mov x1, x23
+	mov x1, x24
 	bl intmul
 	mov x1, x26
 	bl intadd // k * wB + j

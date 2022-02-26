@@ -53,7 +53,7 @@ int main(int argc, char** argv) {
   
   matmul(P.elements, M.elements, N.elements, HM, WM, WN);
 
-  PrintMat(P);
+  PrintMat(M);
 
   // Free matrices
   free(M.elements);

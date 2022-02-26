@@ -2,7 +2,7 @@
 #define _MATMUL_H_
 
 // Matrix size
-#define MATRIX_SIZE 16
+#define MATRIX_SIZE 2
 
 // Matrix dimensions
 // (chosen as multiples of the thread block size for simplicity)
