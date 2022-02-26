@@ -33,21 +33,21 @@
 matmul:
 
 	//matmul(P.elements, M.elements, N.elements, HM, WM, WN);
-	stp x29, x30, [sp, -96]!   // Store FP, LR, move SP, reserve 6+4 registers space
+	stp x29, x30, [sp, -128]!   // Store FP, LR, move SP, reserve 6+4 registers space
 	mov x29, sp                // Make FP = new SP
 	stp x19, x20, [sp, 16]
 	stp x21, x22, [sp, 32]
 	stp x23, x24, [sp, 48]
 	stp x25, x26, [sp, 64]		//i and j
 	stp x27, x28, [sp, 80]		//k and sum
-
+ 
 	//P = M*N or C = A*B
 	//mov x19, x0		//C.elements
 	//mov x20, x1		//A.elements
 	//mov x21, x2		//B.elements
-	str x0, [sp], #-8	//C.elements
-	str x1, [sp], #-16	//A.elements
-	str x2, [sp], #-24	//B.elements
+	str x0, [sp, 88]	    //C.elements
+	str x1, [sp, 96]	//A.elements
+	str x2, [sp, 104]	//B.elements
 	mov x22, x3		//hA height A
 	mov x23, x4		//wA width A
 	mov x24, x5		//wB width B
@@ -77,9 +77,8 @@ ininloop:	//inner inner loop
 
 	bl intadd //add x0, x0, x27 i * wA + k
 	// pull x20 (A.elements) from stack and put in x20
-    ldr x20, [sp, 16]  // x20 is A.elements (address)
-	add x20, x20, x0 // x20 is now address to wanted value
-	ldr x20, x20 // new x20 is element wanted
+    ldr x20, [sp, 96]  // x20 is A.elements (address)
+	ldr x20, [x20, x0] // new x20 is element wanted
 	//B
 	mov x0, x27
 	mov x1, x23
@@ -88,9 +87,8 @@ ininloop:	//inner inner loop
 	bl intadd // k * wB + j
     
 	//pull x21(B.elements) from stack and put in 
-	ldr x21, [sp, 24]
-	add x21, x21, x0 // B[k * wB + j] ????
-	ldr x21, x21
+	ldr x21, [sp, 104]
+	ldr x21, [x21, x0]// B[k * wB + j] ???
 
 	mov x0, x20 // x20 is element wanted in A
 	mov x1, x21 // x21 is element wanted in B
@@ -116,8 +114,8 @@ endininloop:
 	mov x1, x26
 	bl intadd
 	// Index into C
-	ldr x19, [sp, 8]
-	str x28 [x19, x0]
+	ldr x19, [sp, 88]
+	str x28, [x19, x0]
 
 	//j += 1
 	mov x0, x26
@@ -141,14 +139,13 @@ endinloop:
 */
 endoutloop:
 	// Restore stack pointer
-	ldr   x0, [sp], 24
 	// Restore callee saved
 	ldp   x19, x20, [sp, 16]
 	ldp   x21, x22, [sp, 32]
 	ldp   x23, x24, [sp, 48]
 	ldp   x25, x26, [sp, 64]
 	ldp   x27, x28, [sp, 80]
-	ldp   x29, x30, [sp], 64  //restore FP and LR, restore SP, deallocate
+	ldp   x29, x30, [sp], 128  //restore FP and LR, restore SP, deallocate
 	ret
 
 /*
