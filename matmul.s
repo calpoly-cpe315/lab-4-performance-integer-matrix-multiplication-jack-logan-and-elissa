@@ -52,7 +52,23 @@ matmul:
 	mov x23, x4		//wA width A
 	mov x24, x5		//wB width B
 
-	//for (unsigned int i = 0; i < hA; ++i)
+	//recalculate hA, wA, wB to compensate for int size
+	mov x0, x22
+	mov x1, #4
+	bl intmul
+	mov x22, x0
+
+	mov x0, x23
+	mov x1, #4
+	bl intmul
+	mov x23, x0
+
+	mov x0, x24
+	mov x1, #4
+	bl intmul
+	mov x24, x0
+
+	//for (unsigned int i = 0; i < 4*hA; i = i+4)	//factor of 4 since each matrix is int
 	mov x25, #0	//i = 0
 outloop:	//outer loop
 	cmp x25, x22
@@ -78,7 +94,7 @@ ininloop:	//inner inner loop
 	bl intadd //add x0, x0, x27 i * wA + k
 	// pull x20 (A.elements) from stack and put in x20
     ldr x20, [sp, 96]  // x20 is A.elements (address)
-	ldr x20, [x20, x0] // new x20 is element wanted
+	ldr w20, [x20, x0] // new x20 is element wanted
 	//B
 	mov x0, x27
 	mov x1, x24
@@ -88,7 +104,7 @@ ininloop:	//inner inner loop
     
 	//pull x21(B.elements) from stack and put in 
 	ldr x21, [sp, 104]
-	ldr x21, [x21, x0]// B[k * wB + j] ???
+	ldr w21, [x21, x0]// B[k * wB + j] ???
 
 	mov x0, x20 // x20 is element wanted in A
 	mov x1, x21 // x21 is element wanted in B
@@ -100,7 +116,7 @@ ininloop:	//inner inner loop
 	
 	//k += 1
 	mov x0, x27
-	mov x1, #1
+	mov x1, #4
 	bl intadd
 	mov x27, x0
 	b ininloop
@@ -116,11 +132,11 @@ endininloop:
 	bl intadd
 	// Index into C
 	ldr x19, [sp, 88]
-	str x28, [x19, x0]
+	str w28, [x19, x0]
 
 	//j += 1
 	mov x0, x26
-	mov x1, #1
+	mov x1, #4
 	bl intadd
 	mov x26, x0
 	b inloop
@@ -129,7 +145,7 @@ endinloop:
 
 	//i += 1
 	mov x0, x25
-	mov x1, #1
+	mov x1, #4
 	bl intadd
 	mov x25, x0
 	b outloop
