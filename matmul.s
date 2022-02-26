@@ -70,16 +70,35 @@ ininloop:	//inner inner loop
 	cmp x27, x23
 	b.ge endininloop
 	//sum += A[i * wA + k] * B[k * wB + j];
+	mov x0, x25
+	mov x1, x23
+	bl intmul
+	mov x1, x27
 
-	i * wA
-	x0 = i
-	x1 = wA
-	x0 = i*wA -> stack
-	x0 = k
-	x1 = stack
-	x0 = i*wA + k
-	ldr 
+	bl intadd //add x0, x0, x27 i * wA + k
+	// pull x20 (A.elements) from stack and put in x20
+    ldr x20, [sp, 16]  // x20 is A.elements (address)
+	add x20, x20, x0 // x20 is now address to wanted value
+	ldr x20, x20 // new x20 is element wanted
+	//B
+	mov x0, x27
+	mov x1, x23
+	bl intmul
+	mov x1, x26
+	bl intadd // k * wB + j
+    
+	//pull x21(B.elements) from stack and put in 
+	ldr x21, [sp, 24]
+	add x21, x21, x0 // B[k * wB + j] ????
+	ldr x21, x21
 
+	mov x0, x20 // x20 is element wanted in A
+	mov x1, x21 // x21 is element wanted in B
+	bl intmul    // A[i * wA + k] * B[k * wB + j];
+	// x28 is sum x0 is A[i * wA + k] * B[k * wB + j]
+	mov x1, x28
+	bl intadd    // add old sum to 
+	mov x28, x0 // sum is updated
 	
 	//k += 1
 	mov x0, x27
