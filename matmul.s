@@ -76,6 +76,16 @@ ininloop:	//inner inner loop
 
 endininloop:
 	//C[i * wB + j] = sum;
+	// i * wB
+	mov x0, x25
+	mov x1, x24
+	bl intmul
+	// i * wB + j (i * wB still in x0)
+	mov x1, x26
+	bl intadd
+	// Index into C
+	ldr x19, [sp, 8]
+	str x28 [x19, x0]
 
 	//j += 1
 	mov x0, x26
