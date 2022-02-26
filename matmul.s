@@ -102,6 +102,7 @@ ininloop:	//inner inner loop
 	mov x0, x27
 	mov x1, #1
 	bl intadd
+	mov x27, x0
 	b ininloop
 
 endininloop:
@@ -121,6 +122,7 @@ endininloop:
 	mov x0, x26
 	mov x1, #1
 	bl intadd
+	mov x26, x0
 	b inloop
 
 endinloop:
@@ -129,6 +131,7 @@ endinloop:
 	mov x0, x25
 	mov x1, #1
 	bl intadd
+	mov x25, x0
 	b outloop
 
 
