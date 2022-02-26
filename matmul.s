@@ -42,9 +42,12 @@ matmul:
 	stp x27, x28, [sp, 80]		//k and sum
 
 	//P = M*N or C = A*B
-	mov x19, x0		//C.elements
-	mov x20, x1		//A.elements
-	mov x21, x2		//B.elements
+	//mov x19, x0		//C.elements
+	//mov x20, x1		//A.elements
+	//mov x21, x2		//B.elements
+	str x0, [sp], #-8	//C.elements
+	str x1, [sp], #-16	//A.elements
+	str x2, [sp], #-24	//B.elements
 	mov x22, x3		//hA height A
 	mov x23, x4		//wA width A
 	mov x24, x5		//wB width B
@@ -67,6 +70,16 @@ ininloop:	//inner inner loop
 	cmp x27, x23
 	b.ge endininloop
 	//sum += A[i * wA + k] * B[k * wB + j];
+
+	i * wA
+	x0 = i
+	x1 = wA
+	x0 = i*wA -> stack
+	x0 = k
+	x1 = stack
+	x0 = i*wA + k
+	ldr 
+
 	
 	//k += 1
 	mov x0, x27
@@ -108,6 +121,8 @@ endinloop:
 	bl     printf
 */
 endoutloop:
+	// Restore stack pointer
+	ldr   x0, [sp], 24
 	// Restore callee saved
 	ldp   x19, x20, [sp, 16]
 	ldp   x21, x22, [sp, 32]
