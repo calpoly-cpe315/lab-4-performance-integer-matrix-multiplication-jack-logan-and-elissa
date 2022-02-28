@@ -29,8 +29,8 @@ loop:
     
     // b -= 1
        mov     x0, x24
-       mov     x1, #-1
-       bl      intadd
+       mov     x1, #1
+       bl      intsub
        mov     x24, x0
 
 skip:  lsl     x23, x23, #1
