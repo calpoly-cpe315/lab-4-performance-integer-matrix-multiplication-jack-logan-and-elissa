@@ -42,31 +42,12 @@ matmul:
 	stp x27, x28, [sp, 80]		//k and sum
  
 	//P = M*N or C = A*B
-	//mov x19, x0		//C.elements
-	//mov x20, x1		//A.elements
-	//mov x21, x2		//B.elements
 	str x0, [sp, 88]	    //C.elements
 	str x1, [sp, 96]	//A.elements
 	str x2, [sp, 104]	//B.elements
 	mov x22, x3		//hA height A
 	mov x23, x4		//wA width A
 	mov x24, x5		//wB width B
-
-	//recalculate hA, wA, wB to compensate for int size
-	//mov x0, x22
-	//mov x1, #4
-	//bl intmul
-	//mov x22, x0
-
-	//mov x0, x23
-	//mov x1, #4
-	//bl intmul
-	//mov x23, x0
-
-	//mov x0, x24
-	//mov x1, #4
-	//bl intmul
-	//mov x24, x0
 
 	//for (unsigned int i = 0; i < 4*hA; i = i+4)	//factor of 4 since each matrix is int
 	mov x25, #0	//i = 0
@@ -160,12 +141,6 @@ endinloop:
 	mov x25, x0
 	b outloop
 
-
-/*
-	ldr    w0, =startstring      // load start string0
-	mov x1, x19
-	bl     printf
-*/
 endoutloop:
 	// Restore stack pointer
 	// Restore callee saved
@@ -176,8 +151,3 @@ endoutloop:
 	ldp   x27, x28, [sp, 80]
 	ldp   x29, x30, [sp], 128  //restore FP and LR, restore SP, deallocate
 	ret
-
-/*
-startstring:
-	.asciz	"P.elements = %d?\n"
-*/

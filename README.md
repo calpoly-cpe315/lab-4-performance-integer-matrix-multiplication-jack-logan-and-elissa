@@ -1,10 +1,12 @@
 # cpe315-matmul
 ## Your name(s) here
+Logan Cable lcable99 Jack Meyers JackMeiers Elissa Covarrubias elcovarr
 
 ### To build:
 ```shell
 make clean; make
 ```
+Note: to run matmul-mul.s replace matmul.s from Makefil with matmul-mul.s
 ### To run:
 ```shell
 perf stat ./mm > p.out
